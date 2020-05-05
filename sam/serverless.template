@@ -73,6 +73,23 @@
         },
         "Policies": [
           {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Action": [
+                  "events:DeleteRule",
+                  "events:ListTargetsByRule",
+                  "events:RemoveTargets"
+                ],
+                "Resource": [
+                  "*"
+                ]
+              }
+            ]
+          },
+          {
             "DynamoDBCrudPolicy": {
               "TableName": {
                 "Ref": "ConnectionsTable"
