@@ -31,14 +31,14 @@ function connect(url, token, stackName, compact, sam) {
         console.log(JSON.stringify(obj, null, 2));
       }
       if (sam) {
-        const lambdaResponse = await lambda
+        await lambda
           .invoke({
             FunctionName: obj.Target,
             Payload: JSON.stringify(obj.Body)
           })
           .promise();
       }
-    } catch {
+    } catch {      
       console.log(data);
     }
   });
