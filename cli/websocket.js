@@ -3,14 +3,14 @@ var WebSocketClient = require('websocket').client;
 var client = new WebSocketClient();
 const WebSocket = require('ws');
 
-function connect(url, ruleNames, token, compact) {
+function connect(url, token, stackName, compact) {
   const ws = new WebSocket(url);
 
   ws.on('open', function open() {
     const payload = JSON.stringify({
       action: 'register',
-      rules: ruleNames,
-      token: token
+      token: token,
+      stack: stackName
     });
     ws.send(payload, err => {
       if (err) {
@@ -20,12 +20,16 @@ function connect(url, ruleNames, token, compact) {
   });
 
   ws.on('message', function incoming(data) {
-    const obj = JSON.parse(data);
-    delete obj.Token;
-    if (compact) {
-      console.log(JSON.stringify(obj));
-    } else {
-      console.log(JSON.stringify(obj, null, 2));
+    try {
+      const obj = JSON.parse(data);
+      delete obj.Token;
+      if (compact) {
+        console.log(JSON.stringify(obj));
+      } else {
+        console.log(JSON.stringify(obj, null, 2));
+      }
+    } catch {
+      console.log(data);
     }
   });
 

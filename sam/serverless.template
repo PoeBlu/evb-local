@@ -117,23 +117,67 @@
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "CodeUri": ".",
-        "Handler": "src/registration-function.handler",
-        "MemorySize": 256,
+        "Handler": "src/Registration.handler",
+        "MemorySize": 512,
+        "Timeout": 60,
         "Runtime": "nodejs12.x",
         "Environment": {
           "Variables": {
             "ConnectionsTable": {
               "Ref": "ConnectionsTable"
+            },
+            "StackName": {
+              "Ref": "AWS::StackName"
+            },
+            "AccountId": {
+              "Ref": "AWS::AccountId"
+            },
+            "ApiId": {
+              "Ref": "WebSocket"
             }
           }
         },
         "Policies": [
+          "AmazonAPIGatewayInvokeFullAccess",
           {
             "DynamoDBCrudPolicy": {
               "TableName": {
                 "Ref": "ConnectionsTable"
               }
             }
+          },
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Action": [
+                  "events:DescribeRule",
+                  "events:ListTargetsByRule",
+                  "events:PutRule",
+                  "events:PutTargets"
+                ],
+                "Resource": [
+                  "*"
+                ]
+              }
+            ]
+          },
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Action": [
+                  "cloudformation:ListStackResources"
+                ],
+                "Resource": [
+                  "*"
+                ]
+              }
+            ]
           }
         ]
       }
@@ -156,7 +200,7 @@
             "AttributeName": "id",
             "KeyType": "HASH"
           }
-        ],      
+        ],
         "GlobalSecondaryIndexes": [
           {
             "IndexName": "TokenGSI",
