@@ -21,6 +21,11 @@ program
   )
   .description('Initiates local consumption of a stacks EventBridge rules')
   .action(async (stackName, cmd) => {
+    if (!process.env.AWS_REGION) {
+      console.log("Please set environment variable AWS_REGION to your desired region. I.e us-east-1");
+      return;
+    }
+
     await authenticate();
     await init(stackName, cmd.compact.toLowerCase() === 'true');
   });
