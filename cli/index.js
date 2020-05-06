@@ -15,6 +15,7 @@ program
   .command('listen [stackName]')
   .alias('l')
   .option('-c, --compact [compact]', 'Output compact JSON on one line', 'false')
+  .option('-s, --sam-local [sam]', 'Send requests to sam-local', 'false')
   .option(
     '--sso',
     'Authenticate with AWS SSO. Set environment variable EVB_CLI_SSO=1 for default behaviour'
@@ -22,12 +23,14 @@ program
   .description('Initiates local consumption of a stacks EventBridge rules')
   .action(async (stackName, cmd) => {
     if (!process.env.AWS_REGION) {
-      console.log("Please set environment variable AWS_REGION to your desired region. I.e us-east-1");
+      console.log(
+        'Please set environment variable AWS_REGION to your desired region. I.e us-east-1'
+      );
       return;
     }
 
     await authenticate();
-    await init(stackName, cmd.compact.toLowerCase() === 'true');
+    await init(stackName, cmd.compact.toLowerCase() === 'true', cmd.samLocal.toLowerCase() === 'true');
   });
 
 program
@@ -80,10 +83,10 @@ async function authenticate() {
   }
 }
 
-async function init(stackName, compact) {
+async function init(stackName, compact, sam) {
   const cloudFormation = new AWS.CloudFormation();
   const evbLocalStack = await cloudFormation
-    .listStackResources({ StackName: "evb-local" })
+    .listStackResources({ StackName: 'evb-local' })
     .promise();
   const apiGatewayId = evbLocalStack.StackResourceSummaries.filter(
     p => p.LogicalResourceId === 'WebSocket'
@@ -93,8 +96,9 @@ async function init(stackName, compact) {
     `wss://${apiGatewayId}.execute-api.${process.env.AWS_REGION}.amazonaws.com/Prod`,
     token,
     stackName,
-    compact
+    compact,
+    sam
   );
   let i = 0;
-  console.log("Connecting...");
+  console.log('Connecting...');
 }

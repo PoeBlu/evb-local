@@ -1,6 +1,11 @@
 const WebSocket = require('ws');
+const AWS = require('aws-sdk');
 
-function connect(url, token, stackName, compact) {
+function connect(url, token, stackName, compact, sam) {
+  const lambda = new AWS.Lambda({
+    endpoint: 'http://127.0.0.1:3001/',
+    sslEnabled: false
+  });
   const ws = new WebSocket(url);
 
   ws.on('open', function open() {
@@ -16,7 +21,7 @@ function connect(url, token, stackName, compact) {
     });
   });
 
-  ws.on('message', function incoming(data) {
+  ws.on('message', async function incoming(data) {
     try {
       const obj = JSON.parse(data);
       delete obj.Token;
@@ -24,6 +29,14 @@ function connect(url, token, stackName, compact) {
         console.log(JSON.stringify(obj));
       } else {
         console.log(JSON.stringify(obj, null, 2));
+      }
+      if (sam) {
+        const lambdaResponse = await lambda
+          .invoke({
+            FunctionName: obj.Target,
+            Payload: JSON.stringify(obj.Body)
+          })
+          .promise();
       }
     } catch {
       console.log(data);

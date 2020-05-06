@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@mhlabs/aws-sso-client-auth": "^1.0.7",
+    "aws-sdk": "^2.670.0",
     "commander": "^5.1.0",
     "node-persist": "^3.0.5",
     "uuid": "^8.0.0",
@@ -27,5 +28,4 @@
     "eventbridge",
     "cli"
   ]
-
 }
