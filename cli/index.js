@@ -97,6 +97,4 @@ async function init(stackName, compact) {
   );
   let i = 0;
   console.log("Connecting...");
-  //   setInterval(() => {
-  // }, 2000)
 }
