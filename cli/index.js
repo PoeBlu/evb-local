@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const EVB_CACHE_DIR = `${os.homedir()}/.evb-local`;
 
-program.version('1.0.11', '-v, --vers', 'output the current version');
+program.version('1.0.0', '-v, --vers', 'output the current version');
 program
   .command('listen [stackName]')
   .alias('l')
