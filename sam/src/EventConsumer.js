@@ -7,9 +7,8 @@ const apigateway = new AWS.ApiGatewayManagementApi({
 });
 
 async function receiver(event, context) {
-  console.log(event);
-
-  let connections = cache.get('connections');
+  const cacheKey = `connections_ ${event.Token}`;
+  let connections = cache.get(cacheKey);
 
   if (!connections) {
     connections = (
@@ -27,7 +26,7 @@ async function receiver(event, context) {
         })
         .promise()
     ).Items;
-    cache.set('connections', connections);
+    cache.set(cacheKey, connections);
   }
   console.log(connections);
   const tasks = [];
