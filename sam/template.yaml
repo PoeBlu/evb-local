@@ -240,8 +240,6 @@ Resources:
         Variables:
           ApiId:
             Ref: WebSocket
-          ApiBaseUrl:
-            Fn::ImportValue: ApiGatewayDomainName
           ConnectionsTable:
             Ref: ConnectionsTable
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
