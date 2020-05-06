@@ -35,7 +35,7 @@ Prerequisites:
 }
 ```
 
-1. Install cli
+1. Install CLI
 `npm install -g @mhlabs/evb-local`
 
 ## Usage
@@ -60,6 +60,7 @@ Initiates local consumption of a stacks EventBridge rules
 
 Options:
   -c, --compact [compact]  Output compact JSON on one line (default: "false")
+  -s, --sam-local [sam]    Send requests to sam-local (default: "false")
   --sso                    Authenticate with AWS SSO. Set environment variable EVB_CLI_SSO=1 for
                            default behaviour
   -h, --help               display help for command
