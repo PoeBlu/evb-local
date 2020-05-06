@@ -1,22 +1,31 @@
 {
   "name": "evb-local",
   "version": "1.0.0",
-  "description": "",
+  "description": "A CLI tool for local ingestion of a CloudFormation stack's EventBridge rules",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
+  "author": "mhlabs",
   "license": "ISC",
   "dependencies": {
     "@mhlabs/aws-sso-client-auth": "^1.0.7",
     "commander": "^5.1.0",
     "node-persist": "^3.0.5",
     "uuid": "^8.0.0",
-    "websocket": "^1.0.31",
     "ws": "^7.2.5"
   },
   "bin": {
     "evb-local": "index.js"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "aws",
+    "sam",
+    "eventbridge",
+    "cli"
+  ]
+
 }

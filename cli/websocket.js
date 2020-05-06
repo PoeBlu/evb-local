@@ -1,6 +1,3 @@
-var WebSocketClient = require('websocket').client;
-
-var client = new WebSocketClient();
 const WebSocket = require('ws');
 
 function connect(url, token, stackName, compact) {

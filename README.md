@@ -49,3 +49,31 @@ Commands:
   configure-sso [options]         Configure authentication with AWS Single Sign-On
   help [command]                  display help for command
 ```
+
+## Usage of `listen` command
+```
+Usage: evb-local listen|l [options] [stackName]
+
+Initiates local consumption of a stacks EventBridge rules
+
+Options:
+  -c, --compact [compact]  Output compact JSON on one line (default: "false")
+  --sso                    Authenticate with AWS SSO. Set environment variable EVB_CLI_SSO=1 for
+                           default behaviour
+  -h, --help               display help for command
+```
+
+### Example output
+```
+{
+  "Target": <RuleTarget>,
+  "Body": {
+    <EventPayload>
+  }
+}
+
+```
+
+Where:
+* `RuleTarget` is the name identifier of the EventBridge rule's target. If this exists in the same stack it will display the CloudFromation LogicalID
+* `EventPayload` is the payload of the event
