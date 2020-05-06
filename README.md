@@ -2,6 +2,8 @@
 
 Tool that lets you subscribe locally to events matching EventBridge rules in a given deployed stack. This is to help with debugging of complex flow of events raised in your applicaton.
 
+![Demo](https://raw.githubusercontent.com/mhlabs/evb-local/master/demo.gif)
+
 ## Backend setup (once per AWS account)
 1. Make sure you have either `aws-cli` or `sam-cli` installed.
 2. Clone this repo
