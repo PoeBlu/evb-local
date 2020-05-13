@@ -1,26 +1,23 @@
 #!/usr/bin/env node
 
 const AWS = require('aws-sdk');
-const websocket = require('./websocket');
 const program = require('commander');
 const ssoAuth = require('@mhlabs/aws-sso-client-auth');
 const storage = require('node-persist');
 const os = require('os');
-const { v4: uuidv4 } = require('uuid');
+
+const stackListener = require('./listeners/stackListener');
+const localPatternListener = require('./listeners/localPatternListener');
 
 const EVB_CACHE_DIR = `${os.homedir()}/.evb-local`;
 
-program.version('1.0.0', '-v, --vers', 'output the current version');
+program.version('1.0.3', '-v, --vers', 'output the current version');
 program
-  .command('listen [stackName]')
+  .command('listen [StackName]')
   .alias('l')
   .option('-c, --compact [compact]', 'Output compact JSON on one line', 'false')
   .option('-s, --sam-local [sam]', 'Send requests to sam-local', 'false')
-  .option(
-    '--sso',
-    'Authenticate with AWS SSO. Set environment variable EVB_CLI_SSO=1 for default behaviour'
-  )
-  .description('Initiates local consumption of a stacks EventBridge rules')
+  .description("Initiates local consumption of a stack's EventBridge rules")
   .action(async (stackName, cmd) => {
     if (!process.env.AWS_REGION) {
       console.log(
@@ -30,7 +27,39 @@ program
     }
 
     await authenticate();
-    await init(stackName, cmd.compact.toLowerCase() === 'true', cmd.samLocal.toLowerCase() === 'true');
+    await stackListener.init(
+      stackName,
+      cmd.compact.toLowerCase() === 'true',
+      cmd.samLocal.toLowerCase() === 'true'
+    );
+  });
+
+program
+  .command('test-rule [RuleName]')
+  .alias('t')
+  .option(
+    '-t, --template-file [templateFile]',
+    'Path to template file',
+    'template.yml'
+  )
+  .option('-c, --compact [compact]', 'Output compact JSON on one line', 'false')
+  .option('-s, --sam-local [sam]', 'Send requests to sam-local', 'false')
+  .description('Initiates local consumption of an undeployed EventBridge rule')
+  .action(async (ruleName, cmd) => {
+    if (!process.env.AWS_REGION) {
+      console.log(
+        'Please set environment variable AWS_REGION to your desired region. I.e us-east-1'
+      );
+      return;
+    }
+
+    await authenticate();
+    await localPatternListener.init(
+      ruleName,
+      cmd.templateFile,
+      cmd.compact.toLowerCase() === 'true',
+      cmd.samLocal.toLowerCase() === 'true'
+    );
   });
 
 program
@@ -81,24 +110,4 @@ async function authenticate() {
       credentials: await ssoAuth.authenticate(ssoConfig.role)
     });
   }
-}
-
-async function init(stackName, compact, sam) {
-  const cloudFormation = new AWS.CloudFormation();
-  const evbLocalStack = await cloudFormation
-    .listStackResources({ StackName: 'evb-local' })
-    .promise();
-  const apiGatewayId = evbLocalStack.StackResourceSummaries.filter(
-    p => p.LogicalResourceId === 'WebSocket'
-  )[0].PhysicalResourceId;
-  const token = uuidv4();
-  const ws = websocket.connect(
-    `wss://${apiGatewayId}.execute-api.${process.env.AWS_REGION}.amazonaws.com/Prod`,
-    token,
-    stackName,
-    compact,
-    sam
-  );
-  let i = 0;
-  console.log('Connecting...');
 }

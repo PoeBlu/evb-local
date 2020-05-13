@@ -32,20 +32,19 @@ async function receiver(event, context) {
   const tasks = [];
   for (const connection of connections) {
     try {
-      //tasks.push(
-      const resp = await apigateway
+      tasks.push(
+      apigateway
         .postToConnection({
           ConnectionId: connection.id,
           Data: JSON.stringify(event)
         })
-        .promise();
-      console.log(resp);
-      //);
+        .promise()
+      );
     } catch (ex) {
       console.log(ex);
     }
-    await Promise.all(tasks.map((p) => p.catch((e) => e)));
   }
+  await Promise.all(tasks.map((p) => p.catch((e) => e)));
 
   return 'Success';
 }
