@@ -33,7 +33,7 @@ Prerequisites:
 }
 ```
 
-1. Install CLI
+Install CLI
 `npm install -g @mhlabs/evb-local`
 
 ## Usage
