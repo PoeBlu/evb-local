@@ -6,7 +6,7 @@ Tool that lets you subscribe locally to events matching EventBridge rules in a g
 1. Make sure you have either `aws-cli` or `sam-cli` installed.
 2. Clone this repo
 3. Go to the `./sam`-folder
-4. `npm -i --only=prod`
+4. `npm i --only=prod`
 5. Deploy template.yaml
    `sam deploy -t template.yaml --guided --stack-name evb-local`
 
