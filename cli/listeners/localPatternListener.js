@@ -42,7 +42,13 @@ function findAllKeys(obj, keyArray) {
 }
 
 async function initLocalPatternListener(stackName, templateFile, compact, sam) {
-  const templateString = fs.readFileSync(templateFile);
+  let templateString = "";
+  try {
+    templateString = fs.readFileSync(templateFile);
+  } catch {
+    console.log(`Can't find ${templateFile}. Specify location with -t flag, for example 'evb-local test-rule -t serverless.template'`);
+    process.exit(1);
+  }
   const parser = utils.isJson(templateString) ? JSON.parse : YAML.yamlParse;
   template = parser(templateString);
   let rules = [];
